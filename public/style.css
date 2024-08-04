@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    background-color: aqua;
+}
+
+.container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.inputbox {
+    height: 2rem;
+    width: 20rem;
+    border-radius: 2rem;
+
+}
+.inputbox::placeholder{
+    text-align: center;
+}
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    margin: 1rem;
+    width: 20rem;
+    height:5rem
+    
+}   
+
+.buttons>button {
+    padding:1rem;
+    width: 10rem;
+    border-radius: 2rem;
+}
+
+.todo-list {
+    border: solid;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center ;
+    flex-direction: column;
+    width: 40rem;
+    height: 40rem;
+    padding: 3rem;
+    overflow:auto;
+    border-radius: 2rem;
+    background-color: white;
+}
+
+.todo-list > .todo-item {
+    width: 30rem; /* Fixed width for each item */
+    height: auto; /* Allow height to adjust based on content */
+    border: 2px solid #ccc; /* Border for individual items */
+    border-radius: 2rem;
+    margin: 0.5rem 0; /* Space between items vertically */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    overflow: hidden; /* Hide any overflowing content */
+    word-wrap: break-word; /* Break long words */
+    word-break: break-word; /* Ensure word break at any point */
+    white-space: normal; /* Allow text to wrap to the next line */
+}
+.todo-item input[type="checkbox"] {
+    margin-right: 1.5rem; /* Adjust this value to add space between checkbox and label */
+}
