@@ -34,7 +34,7 @@ async function addItem() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ newItem: newItem }) // Send the newItem value as JSON with the correct field name
+            body: JSON.stringify({ item_todo : newItem }) // Send the newItem value as JSON with the correct field name
         });
 
         if (!response.ok) {
@@ -69,26 +69,33 @@ function refreshItem(itemDes, done, id) {
 
     todoList.appendChild(itemDiv);
 }
-
 async function addData() {
     try {
-        const response = await fetch('http://localhost:3000/api/items/todolist', {
-            method: 'POST',
+        // Fetch data from the server
+        const response = await fetch('http://localhost:3000/api/data', {
+            method: 'GET', // Use GET to retrieve data
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+
+        // Check if response is ok
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Parse the JSON data
         const data = await response.json();
         console.log(data);
-        
+
         // Clear the current list
         const todoList = document.getElementById('todoList');
         todoList.innerHTML = '';
 
         // Add the fetched items to the list
-        for (let i = 0; i < data.todos.length; i++) {
-            refreshItem(data.todos[i], data.itemDones[i], data.ids[i]);
-        }
+        data.forEach(item => {
+            refreshItem(item.todo_item, item.completed, item.input_number);
+        });
     } catch (error) {
         console.error('Error fetching data:', error);
     }
