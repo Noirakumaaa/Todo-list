@@ -1,74 +1,118 @@
-body {
-    margin: 0;
-    background-color: aqua;
+body, html {
+    height: 100%; /* Ensure the gradient covers the entire height */
+    margin: 0; /* Remove default margin to avoid white space around the body */
+    background-image: 
+        linear-gradient(to right, rgba(0, 102, 255, 0.5), rgba(6, 132, 204, 0.5)),
+        radial-gradient(circle, rgb(105, 48, 238), transparent);
+    background-blend-mode: multiply; /* Optional: Blends the gradients together */
+
 }
 
-.container {
 
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border: solid;
+    height: 100%;
+    width: 100%;
+
+
+}
+
+.container-item-topColumn {
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
+    border-radius: 5rem;
+    height: 35%;
+    width: 40%;
+    margin: 3%;
+}
+.container-item-topColumn > h1 {
+    font-weight: 300;
 }
 
-.inputbox {
+
+.container-item-topColumn > input {
+    border-radius: 5rem;
     height: 2rem;
     width: 20rem;
-    border-radius: 2rem;
-
-}
-.inputbox::placeholder{
+    margin: 3%;
     text-align: center;
 }
+
 .buttons {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    flex-direction: row;
-    margin: 1rem;
+    height: 20%;
     width: 20rem;
-    height:5rem
-    
-}   
-
-.buttons>button {
-    padding:1rem;
-    width: 10rem;
-    border-radius: 2rem;
 }
+
+.buttons > button {
+    width: 7rem;
+    height: 2rem;
+    border-radius: 5rem;
+}
+
 
 .todo-list {
-    border: solid;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center ;
-    flex-direction: column;
-    width: 40rem;
-    height: 40rem;
-    padding: 3rem;
-    overflow:auto;
-    border-radius: 2rem;
+    border-radius:2rem;
+    height: 85%;
+    width: 40%;
     background-color: white;
+    overflow: hidden;
+    
 }
 
-.todo-list > .todo-item {
-    width: 30rem; /* Fixed width for each item */
-    height: auto; /* Allow height to adjust based on content */
-    border: 2px solid #ccc; /* Border for individual items */
-    border-radius: 2rem;
-    margin: 0.5rem 0; /* Space between items vertically */
-    box-sizing: border-box;
+.top-Option {
     display: flex;
-    align-items: center;
-    padding: 2rem;
-    flex-shrink: 0;
-    font-size: 1.5rem;
-    overflow: hidden; /* Hide any overflowing content */
-    word-wrap: break-word; /* Break long words */
-    word-break: break-word; /* Ensure word break at any point */
-    white-space: normal; /* Allow text to wrap to the next line */
+    flex-direction: row;
+
 }
-.todo-item input[type="checkbox"] {
-    margin-right: 1.5rem; /* Adjust this value to add space between checkbox and label */
+.top-Option > button {
+    width: 50%;
+    height: 5rem;
+    border: none;
+}
+
+
+.top-Option > button {
+    background-color: white;
+    border-bottom: solid;
+}
+
+.top-Option > button:hover {
+    background-color: rgb(212, 207, 207);
+}
+
+
+.todo-list-item {
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0.5rem;
+    border: solid;
+    border-radius: 5rem;
+}
+
+.todo-list-item > button {
+    font-size: 1rem;
+    font-weight:bold;
+    text-decoration: none;
+    height: 3rem;
+    width: 3rem;
+    background-color: white;
+    border-radius: 5rem;
+
+}
+
+.todo-list-item > button:hover {
+    background-color: lightgrey;
 }
