@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function addItem() {
     const todoItem = document.getElementById('newItem').value;
 
-    fetch('http://localhost:3000/api/add/todoItem', {
+    fetch('/api/add/todoItem', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ async function ongoingItems() {
         item.remove();
     });
 
-    fetch('http://localhost:3000/api/get/todoItem')
+    fetch('/api/get/todoItem')
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -125,7 +125,7 @@ async function ongoingItems() {
 }
 
 function updateData(input_number) {
-    fetch('http://localhost:3000/api/update/todoItem', {
+    fetch('/api/update/todoItem', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ function completedTask(){
         item.remove();
     });
 
-    fetch('http://localhost:3000/api/get/todoItem')
+    fetch('/api/get/todoItem')
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -180,7 +180,7 @@ function completedTask(){
 
 
 function deleteData(input_number){
-    fetch('http://localhost:3000/api/delete/todoItem', {
+    fetch('/api/delete/todoItem', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
