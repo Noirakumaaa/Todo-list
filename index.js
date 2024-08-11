@@ -3,7 +3,9 @@ const bodyParser = require('body-parser');
 const mongooes = require('mongoose')
 const TodoItem = require('./models/todolist');
 const path = require('path');
+require('dotenv').config();
 
+const mongo_url = process.env.MongoApiKey;
 const app = express();
 app.use(bodyParser.json()); // To parse JSON bodies
 const port = 3000;
@@ -68,7 +70,7 @@ app.put('/api/delete/todoItem', async(req,res)=>{
 })
 
 
-mongooes.connect('mongodb+srv://Noir:uDuEfWwZGT8oEIyp@backenddb.izjaw.mongodb.net/todolist?retryWrites=true&w=majority&appName=backendDB')
+mongooes.connect(mongo_url)
 .then(()=>{
     console.log("Database is connected");
     app.listen(port, () => {
