@@ -1,141 +1,206 @@
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        location.reload();
+    });
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    addData();
+    ongoingItems();
 });
 
-async function addItem() {
-    const todoList = document.getElementById('todoList');
-    const newItem = document.getElementById('newItem').value;
+function addItem() {
+    const todoItem = document.getElementById('newItem').value;
 
-    if (newItem.trim() === '') {
-        alert('Please enter a task.');
-        return;
-    }
-
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'todo-item';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-
-    const label = document.createElement('label');
-    label.textContent = newItem;
-
-    itemDiv.appendChild(checkbox);
-    itemDiv.appendChild(label);
-
-    todoList.appendChild(itemDiv);
-
-    document.getElementById('newItem').value = ''; // Clear the input
-
-    try {
-        const response = await fetch('http://localhost:3000/api/data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ item_todo : newItem }) // Send the newItem value as JSON with the correct field name
-        });
-
+    fetch('http://localhost:3000/api/add/todoItem', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ todo_item: todoItem })
+    })
+    .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
-        const data = await response.json();
-        console.log('Server response:', data);
-        addData()
-    } catch (error) {
+        return response.json();
+    })
+    .then(data => {
+        createDivItem(todoItem, data.input_number);
+    })
+    .catch(error => {
         console.error('Error:', error);
-    }
+    });
 }
 
-function refreshItem(itemDes, done, id) {
-    const todoList = document.getElementById('todoList');
-
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'todo-item';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = done; // Set the checkbox based on `done` status
-    checkbox.className = 'todo-item'; // Add the class 'todo-item'
-    checkbox.setAttribute('data-id', id); // Set a unique data-id
+function createDivItem(todoItem, itemID) {
+    const newDiv = document.createElement('div');
+    newDiv.className = 'todo-list-item';
     
-    const label = document.createElement('label');
-    label.textContent = itemDes;
+    const newCheckbox = document.createElement('input');
+    newCheckbox.type = 'checkbox';
+    
+    const newTodoItem = document.createElement('h3');
+    newTodoItem.className = 'todo-text';
+    newTodoItem.textContent = todoItem;
 
-    itemDiv.appendChild(checkbox);
-    itemDiv.appendChild(label);
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.textContent = "⭐";
+    deleteButton.id = itemID;
 
-    todoList.appendChild(itemDiv);
+    deleteButton.addEventListener('click', function() {
+        const deleteID = this.id;
+        console.log('Delete ID:', deleteID);
+        updateData(deleteID);
+        const deleteDiv = this.parentNode;
+        deleteDiv.remove();
+    });
+
+    newDiv.appendChild(newCheckbox);
+    newDiv.appendChild(newTodoItem);
+    newDiv.appendChild(deleteButton);
+    
+    const todoList = document.getElementById('todoList');
+    todoList.appendChild(newDiv);
 }
-async function addData() {
-    try {
-        // Fetch data from the server
-        const response = await fetch('http://localhost:3000/api/data', {
-            method: 'GET', // Use GET to retrieve data
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
 
-        // Check if response is ok
+
+function doneItemdiv(todoItem, itemID) {
+    const newDiv = document.createElement('div');
+    newDiv.className = 'todo-list-item';
+    
+    const newCheckbox = document.createElement('input');
+    newCheckbox.type = 'checkbox';
+    
+    const newTodoItem = document.createElement('h3');
+    newTodoItem.className = 'todo-text';
+    newTodoItem.textContent = todoItem;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.textContent = "X";
+    deleteButton.id = itemID;
+
+    deleteButton.addEventListener('click', function() {
+        const deleteID = this.id;
+        console.log('Delete ID:', deleteID);
+        deleteData(deleteID);
+        const deleteDiv = this.parentNode;
+        deleteDiv.remove();
+    });
+
+    newDiv.appendChild(newCheckbox);
+    newDiv.appendChild(newTodoItem);
+    newDiv.appendChild(deleteButton);
+    
+    const todoList = document.getElementById('todoList');
+    todoList.appendChild(newDiv);
+}
+
+async function ongoingItems() {
+
+    const existingID = new Set();
+
+    const allItems = document.querySelectorAll('.todo-list-item');
+    allItems.forEach(item => {
+        item.remove();
+    });
+
+    fetch('http://localhost:3000/api/get/todoItem')
+    .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
-        // Parse the JSON data
-        const data = await response.json();
-        console.log(data);
-
-        // Clear the current list
-        const todoList = document.getElementById('todoList');
-        todoList.innerHTML = '';
-
-        // Add the fetched items to the list
-        data.forEach(item => {
-            refreshItem(item.todo_item, item.completed, item.input_number);
+        return response.json();
+    })
+    .then(data => {
+        data.forEach(element => {
+            if(element.ongoing === false && !existingID.has(element.input_number)) {
+                createDivItem(element.todo_item, element.input_number);
+                existingID.add(element.input_number);
+            }
         });
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function updateData(input_number) {
+    fetch('http://localhost:3000/api/update/todoItem', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input_number: input_number })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Update response:', data);
+        const itemDiv = document.getElementById(input_number);
+        if (itemDiv) itemDiv.remove();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 
-document.getElementById('deleteData').addEventListener('click', async () => {
-    const checkboxes = document.querySelectorAll('.todo-item:checked'); // Select all checked checkboxes
-    console.log(checkboxes);
-    const idsToDelete = Array.from(checkboxes).map(checkbox => checkbox.getAttribute('data-id'));
-    console.log('IDs to delete:', idsToDelete); // Log the IDs to be deleted
 
-    if (idsToDelete.length > 0) {
-        try {
-            const response = await fetch('/api/data/delete', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ids: idsToDelete })
-            });
+function completedTask(){
+    const existingID = new Set();
 
-            const result = await response.json();
-            if (response.ok) {
-                console.log('Items deleted successfully', result);
-                addData()
-                // Optionally remove the deleted items from the DOM
-                idsToDelete.forEach(id => {
-                    const checkbox = document.querySelector(`.todoCheckbox[data-id="${id}"]`);
-                    if (checkbox) {
-                        checkbox.parentElement.remove();
-                    }
-                });
-            } else {
-                console.error('Error deleting items:', result);
-            }
-        } catch (error) {
-            console.error('Error:', error);
+    const allItems = document.querySelectorAll('.todo-list-item');
+    allItems.forEach(item => {
+        item.remove();
+    });
+
+    fetch('http://localhost:3000/api/get/todoItem')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    } else {
-        console.log('No items selected for deletion');
-    }
-});
+        return response.json();
+    })
+    .then(data => {
+        data.forEach(element => {
+            if(element.ongoing === true && !existingID.has(element.input_number)) {
+                doneItemdiv(element.todo_item, element.input_number);
+                existingID.add(element.input_number);
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+function deleteData(input_number){
+    fetch('http://localhost:3000/api/delete/todoItem', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input_number: input_number })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Update response:', data);
+        const itemDiv = document.getElementById(input_number);
+        if (itemDiv) itemDiv.remove();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+

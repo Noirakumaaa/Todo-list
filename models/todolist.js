@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-sequence')(mongoose);
 
-const todoSchema = new mongoose.Schema({
+const todoItemSchema = new mongoose.Schema({
     input_number: {
         type: Number,
         unique: true
@@ -11,7 +11,7 @@ const todoSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    completed :{
+    ongoing :{
         type: Boolean,
         default: false
     }
@@ -19,8 +19,8 @@ const todoSchema = new mongoose.Schema({
 });
 
 // Apply the auto-increment plugin to your schema
-todoSchema.plugin(autoIncrement, { inc_field: 'input_number' });
+todoItemSchema.plugin(autoIncrement, { inc_field: 'input_number' });
 
-const TodoItem = mongoose.model('TodoItem', todoSchema);
+const TodoItem = mongoose.model('TodoItem', todoItemSchema);
 
 module.exports = TodoItem;
